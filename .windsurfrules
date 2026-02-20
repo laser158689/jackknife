@@ -1,0 +1,41 @@
+# Jackknife — Windsurf IDE Rules
+
+## Project: jackknife
+Dual-purpose Python toolkit: importable blades library + project scaffold CLI.
+Python 3.12 | Poetry | FastAPI (optional) | Streamlit (default frontend)
+
+## Commands — ALWAYS use poetry run
+```
+poetry run python          # not python3
+poetry run pytest          # not pytest directly
+poetry run jackknife       # CLI entry point
+poetry run ruff check .    # lint
+poetry run ruff format .   # format
+poetry run mypy jackknife/ # type check
+```
+
+## Branch — ALWAYS branch before changes
+```
+git checkout -b fix/<name>
+git checkout -b feature/<name>
+git checkout -b chore/<name>
+# main branch is protected — never commit directly
+```
+
+## Blade Structure (jackknife/blades/<name>/)
+- base.py    → Protocol + ABC (interface first, implementation later)
+- models.py  → Pydantic models (extra="forbid", async-safe)
+- factory.py → create_X(settings) factory
+- __init__.py → public exports
+
+## Core (jackknife/core/)
+- get_settings()          → pydantic-settings, lru_cache, env wins over TOML
+- get_logger(__name__)    → structlog bound logger
+- JackknifeError          → base exception; all blade errors inherit from it
+- JackknifeBaseModel      → extra="forbid", str_strip_whitespace=True
+
+## Rules
+- Files ≤ 200 lines
+- Absolute paths only in config (validator enforces)
+- All LLM/storage/data/memory interfaces are async
+- Conventional commits: feat: fix: docs: refactor: test: ci: chore:

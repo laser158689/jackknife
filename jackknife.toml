@@ -1,0 +1,83 @@
+# jackknife.toml
+# ─────────────────────────────────────────────────────────────────────────────
+# Non-secret project configuration. This file IS committed to VCS.
+# Secrets (API keys, passwords, connection strings) go in .env ONLY.
+# Environment variables always override values in this file.
+# ─────────────────────────────────────────────────────────────────────────────
+
+[project]
+name = "my-project"
+version = "0.1.0"
+environment = "development"     # development | staging | production | test
+
+[llm]
+provider = "openai"             # openai | anthropic | gemini | ollama | azure
+model = "gpt-4o-mini"
+temperature = 0.7
+max_tokens = 4096
+# api_key comes from LLM_API_KEY in .env
+
+[memory]
+# MUST be an absolute path — relative paths will be rejected at startup
+persist_dir = ""                # e.g., /Users/yourname/projects/myapp/memory_db
+collection = "project_memory"
+embedding_model = "all-MiniLM-L6-v2"
+embedding_dimension = 384
+
+[storage]
+backend = "local"               # local | s3 | gcs | azure
+# MUST be an absolute path
+base_path = ""                  # e.g., /Users/yourname/projects/myapp/files
+
+[storage.s3]
+bucket = ""
+region = "us-east-1"
+# credentials from AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY in .env
+
+[storage.gcs]
+bucket = ""
+# credentials from GOOGLE_APPLICATION_CREDENTIALS in .env
+
+[storage.azure]
+container = ""
+# credentials from AZURE_STORAGE_CONNECTION_STRING in .env
+
+[data.sql]
+# Connection URL comes from DATABASE_URL in .env if not set here
+# Format: postgresql+asyncpg://user:pass@host/dbname
+url = ""
+
+[data.nosql.mongodb]
+# Connection URI comes from MONGODB_URI in .env if not set here
+uri = ""
+
+[data.nosql.redis]
+# URL comes from REDIS_URL in .env if not set here
+url = "redis://localhost:6379"
+
+[data.graph.neo4j]
+# Credentials come from NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD in .env
+uri = "bolt://localhost:7687"
+
+[mcp]
+# List MCP servers to connect to at startup.
+# Each server is a [[mcp.servers]] entry (TOML array of tables).
+servers = []
+
+# Example MCP server entries:
+# [[mcp.servers]]
+# name = "filesystem"
+# transport = "stdio"
+# command = "npx"
+# args = ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/files"]
+#
+# [[mcp.servers]]
+# name = "brave-search"
+# transport = "stdio"
+# command = "npx"
+# args = ["-y", "@modelcontextprotocol/server-brave-search"]
+# env = { BRAVE_API_KEY = "" }   # key loaded from .env
+
+[logging]
+level = "INFO"                  # DEBUG | INFO | WARNING | ERROR
+format = "console"              # console (dev) | json (production)

@@ -1,0 +1,50 @@
+# Jackknife — Cursor IDE Rules
+
+## Project Overview
+Dual-purpose Python toolkit: importable "blades" library + project scaffold CLI.
+Python 3.12, Poetry, FastAPI (optional), Streamlit (default frontend).
+
+## CRITICAL: Python Commands
+- ALWAYS: `poetry run python`, `poetry run pytest`, `poetry run jackknife`
+- NEVER: `python3`, `pip install`, direct python invocations
+
+## CRITICAL: Branch Workflow
+```bash
+git checkout -b fix/name      # bug fixes
+git checkout -b feature/name  # new blades or features
+git checkout -b chore/name    # config, deps, CI updates
+# NEVER commit directly to main
+```
+
+## Architecture
+Each blade lives in `jackknife/blades/<name>/` with:
+- `base.py`    — Protocol (structural typing) + ABC (enforced inheritance)
+- `models.py`  — Pydantic models for all I/O
+- `factory.py` — `create_X(settings)` factory function
+- `__init__.py` — public API exports
+
+Core utilities in `jackknife/core/`:
+- `config.py`     — pydantic-settings; `get_settings()` cached with lru_cache
+- `exceptions.py` — JackknifeError hierarchy
+- `logging.py`    — structlog; use `get_logger(__name__)`
+- `models.py`     — JackknifeBaseModel, TimestampedModel, IdentifiedModel
+
+## Code Standards
+- Line length: 100 characters (ruff enforced)
+- Type annotations required on all public functions
+- Files must stay under 200 lines
+- `extra="forbid"` on all Pydantic models (fail fast on typos)
+- `async def` everywhere in blade interfaces
+
+## Configuration Rules
+- `jackknife.toml` — non-secret config (committed)
+- `.env` — secrets only (NEVER committed, NEVER relative paths)
+- ALL paths must be absolute — pydantic validator enforces this
+
+## Testing
+- `pytest` with `asyncio_mode = "auto"` (no @pytest.mark.asyncio needed)
+- Tests mirror source: `tests/blades/test_memory/` → `jackknife/blades/memory/`
+- Coverage minimum: 80% (CI fails below this)
+
+## Conventional Commits
+feat: | fix: | docs: | refactor: | test: | ci: | chore:

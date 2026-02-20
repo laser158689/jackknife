@@ -1,0 +1,38 @@
+# .github/dependabot.yml
+#
+# CI/CD Teaching Moment #7: Automated dependency updates
+# ─────────────────────────────────────────────────────────────────────────────
+# Dependabot opens pull requests automatically when:
+#   - A dependency has a new version available
+#   - A dependency has a known security vulnerability (immediate alert)
+#
+# Why weekly cadence matters:
+#   Updating one dependency at a time (weekly) is far less painful than
+#   updating 20 dependencies at once (quarterly). Small PRs = easy reviews.
+#   Security patches arrive without waiting for a batch update cycle.
+# ─────────────────────────────────────────────────────────────────────────────
+
+version: 2
+
+updates:
+  # Python dependencies (pip ecosystem covers Poetry too)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "python"
+
+  # GitHub Actions version updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"

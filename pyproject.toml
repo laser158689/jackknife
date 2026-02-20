@@ -1,0 +1,176 @@
+[tool.poetry]
+name = "jackknife"
+version = "0.1.0"
+description = "A dual-purpose foundational toolkit: importable blades library and project scaffold CLI"
+authors = ["Brian Raney"]
+readme = "README.md"
+license = "MIT"
+keywords = ["toolkit", "scaffold", "llm", "agents", "mcp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.12",
+]
+packages = [{ include = "jackknife" }]
+
+# -----------------------------------------------------------------------
+# RUNTIME DEPENDENCIES
+# Core = always installed. Extras = opt-in per blade used.
+# -----------------------------------------------------------------------
+[tool.poetry.dependencies]
+python = "^3.12"
+
+# Core (always installed)
+pydantic           = "^2.9"
+pydantic-settings  = "^2.6"
+typer              = "^0.13"
+click              = ">=8.0.0,<8.3.0"  # Constrained: typer 0.13.x incompatible with click 8.3+
+structlog          = "^24.4"
+tomli              = "^2.0"
+python-dotenv      = "^1.0"
+
+# LLM blade
+litellm            = { version = "^1.50", optional = true }
+
+# Memory blade
+chromadb           = { version = "^0.6", optional = true }
+sentence-transformers = { version = "^3.1", optional = true }
+
+# MCP blade
+mcp                = { version = "^1.0", optional = true }
+
+# Storage blade
+boto3              = { version = "^1.35", optional = true }
+google-cloud-storage = { version = "^2.18", optional = true }
+azure-storage-blob = { version = "^12.22", optional = true }
+
+# Data — SQL blade
+sqlalchemy         = { version = "^2.0", extras = ["asyncio"], optional = true }
+asyncpg            = { version = "^0.30", optional = true }
+aiomysql           = { version = "^0.2", optional = true }
+aiosqlite          = { version = "^0.20", optional = true }
+
+# Data — NoSQL blade
+motor              = { version = "^3.6", optional = true }
+redis              = { version = "^5.0", extras = ["asyncio"], optional = true }
+
+# Data — Graph blade
+neo4j              = { version = "^5.26", optional = true }
+
+# Data — Flat files blade
+pandas             = { version = "^2.2", optional = true }
+openpyxl           = { version = "^3.1", optional = true }
+pyarrow            = { version = "^17.0", optional = true }
+
+# API surfaces
+fastapi            = { version = "^0.115", extras = ["all"], optional = true }
+uvicorn            = { version = "^0.32", optional = true }
+
+# Frontend
+streamlit          = { version = "^1.40", optional = true }
+
+# -----------------------------------------------------------------------
+# EXTRAS (install with: poetry install -E llm,memory,data-sql)
+# -----------------------------------------------------------------------
+[tool.poetry.extras]
+llm          = ["litellm"]
+memory       = ["chromadb", "sentence-transformers"]
+mcp          = ["mcp"]
+storage-s3   = ["boto3"]
+storage-gcs  = ["google-cloud-storage"]
+storage-azure = ["azure-storage-blob"]
+data-sql     = ["sqlalchemy", "asyncpg", "aiomysql", "aiosqlite"]
+data-nosql   = ["motor", "redis"]
+data-graph   = ["neo4j"]
+data-flat    = ["pandas", "openpyxl", "pyarrow"]
+api          = ["fastapi", "uvicorn"]
+frontend     = ["streamlit"]
+all = [
+    "litellm",
+    "chromadb", "sentence-transformers",
+    "mcp",
+    "boto3",
+    "sqlalchemy", "asyncpg", "aiosqlite",
+    "motor", "redis",
+    "pandas", "openpyxl", "pyarrow",
+    "fastapi", "uvicorn",
+    "streamlit",
+]
+
+# -----------------------------------------------------------------------
+# CLI ENTRY POINT
+# -----------------------------------------------------------------------
+[tool.poetry.scripts]
+jackknife = "jackknife.cli:app"
+
+# -----------------------------------------------------------------------
+# DEV DEPENDENCIES
+# -----------------------------------------------------------------------
+[tool.poetry.group.dev.dependencies]
+pytest           = "^8.3"
+pytest-asyncio   = "^0.25"
+pytest-cov       = "^6.0"
+ruff             = "^0.8"
+mypy             = "^1.13"
+pre-commit       = "^4.0"
+# Stubs for mypy
+types-redis      = "^4.6"
+
+# -----------------------------------------------------------------------
+# BUILD
+# -----------------------------------------------------------------------
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
+
+# -----------------------------------------------------------------------
+# TOOL CONFIGURATION
+# -----------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "N",   # pep8-naming
+]
+ignore = ["E501"]  # line length handled by formatter
+
+[tool.ruff.lint.isort]
+known-first-party = ["jackknife"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["jackknife.cli"]
+disallow_untyped_decorators = false
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_decorators = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+asyncio_mode = "auto"
+addopts = "--cov=jackknife --cov-report=term-missing --cov-fail-under=80"
+
+[tool.coverage.run]
+source = ["jackknife"]
+omit = ["tests/*"]

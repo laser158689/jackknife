@@ -1,0 +1,80 @@
+# .github/workflows/test.yml
+#
+# CI/CD Teaching Moment #4: GitHub Actions — automated tests on every push
+# ─────────────────────────────────────────────────────────────────────────────
+# This is the second line of defense after pre-commit hooks.
+# It runs on EVERY push to EVERY branch, and on every PR targeting main.
+#
+# Key decisions explained:
+#   - Cache keyed on poetry.lock: if dependencies haven't changed, the
+#     virtual environment is restored from cache (seconds vs. minutes)
+#   - --all-extras: installs all optional blade deps so tests cover everything
+#   - fail-fast: false: if one matrix entry fails, others still run to completion
+#   - JACKKNIFE_ENV: test: signals test mode (quieter logging, in-memory backends)
+#
+# CI/CD Teaching Moment #3: Branch protection rules
+#   In GitHub: Settings → Branches → Branch protection rules for "main":
+#   ✓ Require status checks to pass (add "Test (Python 3.12)" here)
+#   ✓ Require a pull request before merging
+#   ✓ Dismiss stale pull request approvals when new commits are pushed
+#   ✓ Require linear history (forces rebase, keeps history clean)
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: Test
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: "1.8.4"
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Install dependencies (all extras for full coverage)
+        run: poetry install --all-extras
+
+      - name: Lint with ruff
+        run: poetry run ruff check .
+
+      - name: Check formatting with ruff
+        run: poetry run ruff format --check .
+
+      - name: Type check with mypy
+        run: poetry run mypy jackknife/
+
+      - name: Run tests with coverage
+        run: poetry run pytest
+        env:
+          JACKKNIFE_ENV: test

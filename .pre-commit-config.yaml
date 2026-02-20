@@ -1,0 +1,64 @@
+# .pre-commit-config.yaml
+#
+# CI/CD Teaching Moment #1: Pre-commit hooks
+# ─────────────────────────────────────────────────────────────────────────────
+# These hooks run LOCALLY before every commit — the first line of defense.
+# Install once with: poetry run pre-commit install
+#
+# Why this matters:
+#   - Fast feedback: catches issues in milliseconds, not minutes
+#   - no-commit-to-branch: prevents the most common mistake (pushing to main)
+#     even before GitHub branch protection rules kick in
+#   - detect-private-key: hard stop against the most common security incident
+#   - ruff: replaces black + isort + flake8 in a single fast pass
+#   - commitizen: enforces conventional commit format (feat:, fix:, etc.)
+#     which enables automated changelogs and semantic version bumping
+# ─────────────────────────────────────────────────────────────────────────────
+
+repos:
+  # General file hygiene
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: detect-private-key      # Hard stop — prevents API key commits
+      - id: no-commit-to-branch     # Teaching moment: enforce locally too
+        args: ["--branch", "main"]
+
+  # Ruff: linting + formatting + import sorting (replaces black + isort + flake8)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # Mypy: static type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.13.0
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - pydantic>=2.9
+          - pydantic-settings>=2.6
+          - types-redis>=4.6
+
+  # CI/CD Teaching Moment #2: Conventional commits
+  # ─────────────────────────────────────────────────────────────────────────
+  # Enforces: feat:, fix:, chore:, docs:, refactor:, test:, ci:
+  # This enables: automatic CHANGELOG, semantic version bumping,
+  # and filtered commit views in code review.
+  # Format: type(optional-scope): description
+  # ─────────────────────────────────────────────────────────────────────────
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.1.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
