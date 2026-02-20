@@ -1,0 +1,39 @@
+# {{ project_name_title }} — Claude Code Context
+
+## Stack
+
+- Python 3.12, Poetry
+- Streamlit frontend
+- jackknife for LLM, memory, and data tooling
+
+## Commands
+
+```bash
+# Install
+poetry install
+
+# Run the app
+poetry run streamlit run main.py
+
+# Run tests
+poetry run pytest
+
+# Lint + format
+poetry run ruff check . --fix
+poetry run ruff format .
+```
+
+## Project Structure
+
+```
+{{ project_name }}/
+├── main.py           # Streamlit entry point
+├── pyproject.toml
+├── .env.example      # Required environment variables
+└── tests/
+```
+
+## Environment
+
+Copy `.env.example` to `.env` and fill in your secrets.
+Never commit `.env` to version control.

@@ -38,9 +38,12 @@ class _WriteRequest:
     """Internal: a pending write operation with its completion future."""
 
     entry: MemoryEntry
-    future: asyncio.Future[str] = field(
-        default_factory=lambda: asyncio.get_event_loop().create_future()
-    )
+    future: asyncio.Future[str] = field(init=False)
+
+    def __post_init__(self) -> None:
+        # Future is created by enqueue(), not here, to avoid event loop issues.
+        # This field is set explicitly before the request is put on the queue.
+        pass
 
 
 class MemoryWriteQueue:
@@ -87,12 +90,13 @@ class MemoryWriteQueue:
             The assigned entry ID string
 
         Raises:
-            asyncio.TimeoutError: If the write takes longer than timeout seconds
+            TimeoutError: If the write takes longer than timeout seconds
             MemoryWriteError: If the underlying store raises an error
         """
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         future: asyncio.Future[str] = loop.create_future()
-        request = _WriteRequest(entry=entry, future=future)
+        request = _WriteRequest(entry=entry)
+        request.future = future
         await self._queue.put(request)
         return await asyncio.wait_for(future, timeout=timeout)
 

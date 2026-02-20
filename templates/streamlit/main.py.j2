@@ -1,0 +1,23 @@
+"""{{ project_name_title }} — Streamlit application entry point."""
+
+from __future__ import annotations
+
+import streamlit as st
+
+st.set_page_config(
+    page_title="{{ project_name_title }}",
+    page_icon="🔪",
+    layout="wide",
+)
+
+
+def main() -> None:
+    st.title("{{ project_name_title }}")
+    st.write("Built with [jackknife](https://github.com/your-org/jackknife).")
+
+    # Add your application logic here
+    st.info("Replace this placeholder with your application.")
+
+
+if __name__ == "__main__":
+    main()

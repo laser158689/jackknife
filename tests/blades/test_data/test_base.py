@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import pytest
-
 from jackknife.blades.data.base import (
     BaseSQLConnector,
     DataConnectorProtocol,
@@ -71,23 +69,6 @@ async def test_fetch_all() -> None:
     mock = MockSQLConnector()
     results = await mock.fetch_all("SELECT * FROM table")
     assert len(results) == 1
-
-
-def test_factory_raises_not_implemented() -> None:
-    from jackknife.blades.data.factory import create_connector
-    from jackknife.core.config import get_settings
-
-    with pytest.raises(NotImplementedError):
-        create_connector("sql", get_settings())
-
-
-def test_factory_raises_config_error_for_unknown_type() -> None:
-    from jackknife.blades.data.factory import create_connector
-    from jackknife.core.config import get_settings
-    from jackknife.core.exceptions import ConfigurationError
-
-    with pytest.raises(ConfigurationError, match="Unknown connector type"):
-        create_connector("unknown_type", get_settings())  # type: ignore[arg-type]
 
 
 def test_query_result_model() -> None:

@@ -1,18 +1,19 @@
-"""MCP blade — factory function."""
+"""MCP blade — factory functions."""
 
 from __future__ import annotations
 
-from jackknife.blades.mcp.base import BaseMCPClient
-from jackknife.blades.mcp.models import MCPServerConfig
+from pathlib import Path
+
+from jackknife.blades.mcp.client import MCPStdioClient
+from jackknife.blades.mcp.registry import MCPRegistry
 
 
-def create_mcp_client(config: MCPServerConfig) -> BaseMCPClient:
-    """
-    Create an MCP client for a given server config.
+def create_mcp_client() -> MCPStdioClient:
+    """Create an MCP stdio client. Call client.connect(config) before use."""
+    return MCPStdioClient()
 
-    Phase 2 will wire in the Anthropic mcp SDK client.
-    """
-    raise NotImplementedError(
-        "MCP client implementation coming in Phase 2. "
-        "Interface is defined — see jackknife/blades/mcp/base.py"
-    )
+
+def create_registry(config_path: str | None = None) -> MCPRegistry:
+    """Load MCP server configs from jackknife.toml."""
+    path = Path(config_path) if config_path else None
+    return MCPRegistry(config_path=path)

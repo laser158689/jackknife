@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import pytest
-
 from jackknife.blades.mcp.base import BaseMCPClient, MCPClientProtocol
 from jackknife.blades.mcp.models import MCPServerConfig, MCPTool, MCPToolResult
 
@@ -73,9 +71,9 @@ def test_server_config_model() -> None:
     assert len(config.args) == 3
 
 
-def test_factory_raises_not_implemented() -> None:
+def test_factory_creates_client() -> None:
+    from jackknife.blades.mcp.client import MCPStdioClient
     from jackknife.blades.mcp.factory import create_mcp_client
 
-    config = MCPServerConfig(name="test", command="echo")
-    with pytest.raises(NotImplementedError):
-        create_mcp_client(config)
+    client = create_mcp_client()
+    assert isinstance(client, MCPStdioClient)

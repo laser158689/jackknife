@@ -6,22 +6,47 @@ from jackknife.blades.storage.base import BaseFileStorage
 from jackknife.core.config import Settings
 from jackknife.core.exceptions import ConfigurationError
 
+_SUPPORTED = {"local", "s3", "gcs", "azure"}
+
 
 def create_storage(settings: Settings) -> BaseFileStorage:
     """
     Create a file storage backend from settings.
 
-    Phase 5 will wire in local, S3, GCS, and Azure implementations.
+    Backends:
+        local  — local filesystem (default, no extra required)
+        s3     — AWS S3 (poetry install -E storage-s3)
+        gcs    — Google Cloud Storage (poetry install -E storage-gcs)
+        azure  — Azure Blob Storage (poetry install -E storage-azure)
     """
-    supported = {"local", "s3", "gcs", "azure"}
-
-    if settings.storage.backend not in supported:
+    backend = settings.storage.backend
+    if backend not in _SUPPORTED:
         raise ConfigurationError(
-            f"Unknown storage backend: {settings.storage.backend!r}. "
-            f"Supported: {sorted(supported)}"
+            f"Unknown storage backend: {backend!r}. Supported: {sorted(_SUPPORTED)}"
         )
 
-    raise NotImplementedError(
-        "Storage blade implementation coming in Phase 5. "
-        "Interface is defined — see jackknife/blades/storage/base.py"
-    )
+    if backend == "local":
+        from jackknife.blades.storage.local import LocalFileStorage
+
+        base_path = settings.storage.base_path or "."
+        return LocalFileStorage(base_path=base_path)
+
+    if backend == "s3":
+        from jackknife.blades.storage.s3 import S3FileStorage
+
+        if not settings.storage.bucket:
+            raise ConfigurationError("STORAGE_BUCKET must be set for S3 backend")
+        return S3FileStorage(bucket=settings.storage.bucket, region=settings.storage.region)
+
+    if backend == "gcs":
+        from jackknife.blades.storage.gcs import GCSFileStorage
+
+        if not settings.storage.bucket:
+            raise ConfigurationError("STORAGE_BUCKET must be set for GCS backend")
+        return GCSFileStorage(bucket=settings.storage.bucket)
+
+    from jackknife.blades.storage.azure import AzureFileStorage
+
+    if not settings.storage.bucket:
+        raise ConfigurationError("STORAGE_BUCKET (container name) must be set for Azure backend")
+    return AzureFileStorage(container=settings.storage.bucket)

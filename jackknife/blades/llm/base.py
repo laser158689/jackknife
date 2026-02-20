@@ -35,7 +35,7 @@ class LLMProviderProtocol(Protocol):
         """Generate a non-streaming completion."""
         ...
 
-    async def stream(self, request: LLMRequest) -> AsyncIterator[StreamChunk]:
+    def stream(self, request: LLMRequest) -> AsyncIterator[StreamChunk]:
         """Stream completion tokens as they arrive."""
         ...
 
@@ -58,7 +58,7 @@ class BaseLLMProvider(ABC):
         """Generate a non-streaming completion."""
 
     @abstractmethod
-    async def stream(self, request: LLMRequest) -> AsyncIterator[StreamChunk]:
+    def stream(self, request: LLMRequest) -> AsyncIterator[StreamChunk]:
         """Stream completion tokens."""
 
     async def embed(self, texts: list[str]) -> list[list[float]]:

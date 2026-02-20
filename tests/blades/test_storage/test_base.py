@@ -5,8 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import BinaryIO
 
-import pytest
-
 from jackknife.blades.storage.base import BaseFileStorage, FileStorageProtocol
 from jackknife.blades.storage.models import FileMetadata, UploadResult
 
@@ -68,11 +66,13 @@ async def test_health_check_passes() -> None:
     assert await mock.health_check() is True
 
 
-def test_factory_raises_not_implemented_for_valid_backend() -> None:
-    """Factory raises NotImplementedError until Phase 5 is implemented."""
+def test_factory_returns_local_storage_by_default() -> None:
+    """Factory returns LocalFileStorage when backend is local."""
     from jackknife.blades.storage.factory import create_storage
+    from jackknife.blades.storage.local import LocalFileStorage
     from jackknife.core.config import get_settings
 
     settings = get_settings()
-    with pytest.raises(NotImplementedError):
-        create_storage(settings)
+    if settings.storage.backend == "local":
+        storage = create_storage(settings)
+        assert isinstance(storage, LocalFileStorage)

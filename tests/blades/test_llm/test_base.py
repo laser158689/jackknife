@@ -21,7 +21,7 @@ class MockLLMProvider(BaseLLMProvider):
             provider="mock",
         )
 
-    async def stream(self, request: LLMRequest) -> AsyncIterator[StreamChunk]:
+    def stream(self, request: LLMRequest) -> AsyncIterator[StreamChunk]:
         async def _gen() -> AsyncIterator[StreamChunk]:
             yield StreamChunk(content="mock ")
             yield StreamChunk(content="stream", finish_reason="stop")
@@ -54,16 +54,6 @@ async def test_health_check_returns_true_for_working_provider() -> None:
     mock = MockLLMProvider()
     result = await mock.health_check()
     assert result is True
-
-
-def test_factory_raises_not_implemented() -> None:
-    """Factory should raise NotImplementedError until Phase 3."""
-    from jackknife.blades.llm.factory import create_llm
-    from jackknife.core.config import get_settings
-
-    settings = get_settings()
-    with pytest.raises(NotImplementedError):
-        create_llm(settings)
 
 
 def test_factory_raises_configuration_error_for_unknown_provider(

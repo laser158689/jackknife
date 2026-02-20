@@ -1,30 +1,52 @@
-"""Data blade — factory function."""
+"""Data blade — factory functions for all connector types."""
 
 from __future__ import annotations
 
-from typing import Literal
-
-from jackknife.blades.data.base import BaseDataConnector
+from jackknife.blades.data.base import BaseGraphConnector, BaseNoSQLConnector, BaseSQLConnector
 from jackknife.core.config import Settings
 from jackknife.core.exceptions import ConfigurationError
 
-ConnectorType = Literal["sql", "mongodb", "redis", "neo4j", "csv", "excel", "parquet"]
 
-
-def create_connector(connector_type: ConnectorType, settings: Settings) -> BaseDataConnector:
+def create_sql_connector(settings: Settings) -> BaseSQLConnector:
     """
-    Create a data connector from type and settings.
+    Create an async SQL connector from settings.
 
-    Phase 4 will wire in all connector implementations.
+    Requires the data-sql extra: poetry install -E data-sql
+    Set DATABASE_URL in your .env file.
     """
-    supported = {"sql", "mongodb", "redis", "neo4j", "csv", "excel", "parquet"}
+    from jackknife.blades.data.sql.connector import SQLConnector
 
-    if connector_type not in supported:
+    if not settings.sql.url:
         raise ConfigurationError(
-            f"Unknown connector type: {connector_type!r}. Supported: {sorted(supported)}"
+            "DATABASE_URL is not set. " "Example: DATABASE_URL=sqlite+aiosqlite:///./app.db"
         )
+    return SQLConnector(url=settings.sql.url)
 
-    raise NotImplementedError(
-        "Data blade implementation coming in Phase 4. "
-        "Interface is defined — see jackknife/blades/data/base.py"
-    )
+
+def create_mongo_connector(settings: Settings, database: str = "jackknife") -> BaseNoSQLConnector:
+    """
+    Create a MongoDB connector from settings.
+
+    Requires the data-nosql extra: poetry install -E data-nosql
+    Set MONGODB_URI in your .env file.
+    """
+    from jackknife.blades.data.nosql.mongo import MongoConnector
+
+    if not settings.mongo.uri:
+        raise ConfigurationError(
+            "MONGODB_URI is not set. " "Example: MONGODB_URI=mongodb://localhost:27017"
+        )
+    return MongoConnector(uri=settings.mongo.uri, database=database)
+
+
+def create_graph_connector(
+    uri: str, user: str = "neo4j", password: str = "neo4j"
+) -> BaseGraphConnector:
+    """
+    Create a Neo4j async connector.
+
+    Requires the data-graph extra: poetry install -E data-graph
+    """
+    from jackknife.blades.data.graph.neo4j import Neo4jConnector
+
+    return Neo4jConnector(uri=uri, user=user, password=password)

@@ -4,22 +4,26 @@ from __future__ import annotations
 
 from jackknife.blades.memory.base import BaseMemoryStore
 from jackknife.core.config import Settings
+from jackknife.core.exceptions import ConfigurationError
 
 
 def create_memory_store(settings: Settings) -> BaseMemoryStore:
     """
-    Create a memory store from settings.
+    Create a ChromaDB-backed memory store from settings.
 
-    Phase 2 will wire in the ChromaDB implementation.
-
-    Args:
-        settings: Application settings (uses settings.memory)
-
-    Returns:
-        A BaseMemoryStore implementation
+    Requires the memory extra: poetry install -E memory
+    MEMORY_PERSIST_DIR must be set to an absolute path.
     """
-    # Phase 2: wire in ChromaDB store
-    raise NotImplementedError(
-        "Memory blade implementation coming in Phase 2. "
-        "Interface is defined — see jackknife/blades/memory/base.py"
+    from jackknife.blades.memory.chroma_store import ChromaMemoryStore
+
+    persist_dir = settings.memory.persist_dir
+    if not persist_dir:
+        raise ConfigurationError(
+            "MEMORY_PERSIST_DIR is not set. "
+            "Set it to an absolute path in your .env file: "
+            "MEMORY_PERSIST_DIR=/absolute/path/to/memory_db"
+        )
+    return ChromaMemoryStore(
+        persist_dir=persist_dir,
+        collection_name=settings.memory.collection,
     )

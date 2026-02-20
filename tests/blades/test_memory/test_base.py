@@ -100,9 +100,12 @@ async def test_health_check() -> None:
     assert await mock.health_check() is True
 
 
-def test_factory_raises_not_implemented() -> None:
+def test_factory_raises_config_error_without_persist_dir() -> None:
     from jackknife.blades.memory.factory import create_memory_store
     from jackknife.core.config import get_settings
+    from jackknife.core.exceptions import ConfigurationError
 
-    with pytest.raises(NotImplementedError):
-        create_memory_store(get_settings())
+    settings = get_settings()
+    if not settings.memory.persist_dir:
+        with pytest.raises(ConfigurationError, match="MEMORY_PERSIST_DIR"):
+            create_memory_store(settings)

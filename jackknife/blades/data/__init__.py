@@ -7,7 +7,11 @@ from jackknife.blades.data.base import (
     BaseSQLConnector,
     DataConnectorProtocol,
 )
-from jackknife.blades.data.factory import create_connector
+from jackknife.blades.data.factory import (
+    create_graph_connector,
+    create_mongo_connector,
+    create_sql_connector,
+)
 from jackknife.blades.data.models import ConnectionConfig, QueryResult
 
 __all__ = [
@@ -16,7 +20,9 @@ __all__ = [
     "BaseSQLConnector",
     "BaseNoSQLConnector",
     "BaseGraphConnector",
-    "create_connector",
+    "create_sql_connector",
+    "create_mongo_connector",
+    "create_graph_connector",
     "ConnectionConfig",
     "QueryResult",
 ]

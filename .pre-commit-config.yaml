@@ -49,6 +49,7 @@ repos:
           - pydantic>=2.9
           - pydantic-settings>=2.6
           - types-redis>=4.6
+          - types-aiofiles>=24.1
 
   # CI/CD Teaching Moment #2: Conventional commits
   # ─────────────────────────────────────────────────────────────────────────
