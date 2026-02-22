@@ -57,7 +57,7 @@ aiosqlite          = { version = "^0.20", optional = true }
 
 # Data — NoSQL blade
 motor              = { version = "^3.6", optional = true }
-redis              = { version = "^5.0", extras = ["asyncio"], optional = true }
+redis              = { version = "^7.2", extras = ["asyncio"], optional = true }
 
 # Data — Graph blade
 neo4j              = { version = "^6.1", optional = true }
