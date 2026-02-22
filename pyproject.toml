@@ -123,7 +123,7 @@ mypy             = "^1.13"
 pre-commit       = "^4.0"
 # Stubs for mypy
 types-redis      = "^4.6"
-types-aiofiles   = "^24.1"
+types-aiofiles   = "^25.1"
 
 # -----------------------------------------------------------------------
 # BUILD
