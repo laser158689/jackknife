@@ -24,7 +24,7 @@ python = "^3.12"
 pydantic           = "^2.9"
 pydantic-settings  = "^2.6"
 typer              = "^0.23"
-click              = ">=8.0.0,<8.2.0"  # Constrained: typer 0.13.x incompatible with click 8.2+
+click              = ">=8.0.0,<9.0.0"
 structlog          = "^25.5"
 tomli              = "^2.0"
 python-dotenv      = "^1.0"
@@ -38,7 +38,7 @@ networkx           = { version = "^3.4", optional = true }
 litellm            = { version = "^1.50", optional = true }
 
 # Memory blade
-chromadb           = { version = "^0.6", optional = true }
+chromadb           = { version = "^1.5", optional = true }
 sentence-transformers = { version = "^5.2", optional = true }
 
 # MCP blade
@@ -51,9 +51,9 @@ azure-storage-blob = { version = "^12.22", optional = true }
 
 # Data — SQL blade
 sqlalchemy         = { version = "^2.0", extras = ["asyncio"], optional = true }
-asyncpg            = { version = "^0.30", optional = true }
+asyncpg            = { version = "^0.31", optional = true }
 aiomysql           = { version = "^0.3", optional = true }
-aiosqlite          = { version = "^0.20", optional = true }
+aiosqlite          = { version = "^0.22", optional = true }
 
 # Data — NoSQL blade
 motor              = { version = "^3.6", optional = true }
@@ -118,7 +118,7 @@ jackknife = "jackknife.cli:app"
 pytest           = "^8.3"
 pytest-asyncio   = "^0.25"
 pytest-cov       = "^7.0"
-ruff             = "^0.8"
+ruff             = "^0.15"
 mypy             = "^1.13"
 pre-commit       = "^4.0"
 # Stubs for mypy
