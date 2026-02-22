@@ -1,5 +1,10 @@
 # jackknife
 
+[![CI](https://github.com/laser158689/jackknife/actions/workflows/test.yml/badge.svg)](https://github.com/laser158689/jackknife/actions/workflows/test.yml)
+[![Python](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
 A dual-purpose foundational Python toolkit for AI-powered application development.
 
 1. **Importable blades** — modular, protocol-driven capabilities you drop into any project
