@@ -24,7 +24,7 @@ try:
     from sqlalchemy.orm import sessionmaker
 except ImportError as exc:
     raise ImportError(
-        "SQLAlchemy asyncio not installed. " "Enable the data-sql extra: poetry install -E data-sql"
+        "SQLAlchemy asyncio not installed. Enable the data-sql extra: poetry install -E data-sql"
     ) from exc
 
 log = get_logger(__name__)

@@ -18,8 +18,7 @@ try:
     import redis.asyncio as aioredis
 except ImportError as exc:
     raise ImportError(
-        "redis[asyncio] is not installed. "
-        "Enable the data-nosql extra: poetry install -E data-nosql"
+        "redis[asyncio] is not installed. Enable the data-nosql extra: poetry install -E data-nosql"
     ) from exc
 
 log = get_logger(__name__)

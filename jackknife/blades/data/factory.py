@@ -18,7 +18,7 @@ def create_sql_connector(settings: Settings) -> BaseSQLConnector:
 
     if not settings.sql.url:
         raise ConfigurationError(
-            "DATABASE_URL is not set. " "Example: DATABASE_URL=sqlite+aiosqlite:///./app.db"
+            "DATABASE_URL is not set. Example: DATABASE_URL=sqlite+aiosqlite:///./app.db"
         )
     return SQLConnector(url=settings.sql.url)
 
@@ -34,7 +34,7 @@ def create_mongo_connector(settings: Settings, database: str = "jackknife") -> B
 
     if not settings.mongo.uri:
         raise ConfigurationError(
-            "MONGODB_URI is not set. " "Example: MONGODB_URI=mongodb://localhost:27017"
+            "MONGODB_URI is not set. Example: MONGODB_URI=mongodb://localhost:27017"
         )
     return MongoConnector(uri=settings.mongo.uri, database=database)
 
