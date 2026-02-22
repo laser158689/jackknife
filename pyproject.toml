@@ -118,7 +118,7 @@ jackknife = "jackknife.cli:app"
 pytest           = "^8.3"
 pytest-asyncio   = "^0.25"
 pytest-cov       = "^6.0"
-ruff             = "^0.8"
+ruff             = "^0.15"
 mypy             = "^1.13"
 pre-commit       = "^4.0"
 # Stubs for mypy
