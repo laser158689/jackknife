@@ -51,7 +51,7 @@ azure-storage-blob = { version = "^12.22", optional = true }
 
 # Data — SQL blade
 sqlalchemy         = { version = "^2.0", extras = ["asyncio"], optional = true }
-asyncpg            = { version = "^0.30", optional = true }
+asyncpg            = { version = "^0.31", optional = true }
 aiomysql           = { version = "^0.2", optional = true }
 aiosqlite          = { version = "^0.20", optional = true }
 
