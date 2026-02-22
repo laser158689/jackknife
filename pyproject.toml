@@ -28,7 +28,7 @@ click              = ">=8.0.0,<8.2.0"  # Constrained: typer 0.13.x incompatible 
 structlog          = "^25.5"
 tomli              = "^2.0"
 python-dotenv      = "^1.0"
-aiofiles           = "^24.1"
+aiofiles           = "^25.1"
 jinja2             = "^3.1"
 
 # Agents blade
