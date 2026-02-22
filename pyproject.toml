@@ -60,7 +60,7 @@ motor              = { version = "^3.6", optional = true }
 redis              = { version = "^5.0", extras = ["asyncio"], optional = true }
 
 # Data — Graph blade
-neo4j              = { version = "^5.26", optional = true }
+neo4j              = { version = "^6.1", optional = true }
 
 # Data — Flat files blade
 pandas             = { version = "^2.2", optional = true }
