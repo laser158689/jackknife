@@ -38,7 +38,7 @@ networkx           = { version = "^3.4", optional = true }
 litellm            = { version = "^1.50", optional = true }
 
 # Memory blade
-chromadb           = { version = "^0.6", optional = true }
+chromadb           = { version = "^1.5", optional = true }
 sentence-transformers = { version = "^3.1", optional = true }
 
 # MCP blade
