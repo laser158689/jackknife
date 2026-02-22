@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 from uuid import UUID, uuid4
 
@@ -11,7 +11,7 @@ from pydantic import Field
 from jackknife.core.models import JackknifeBaseModel, TimestampedModel
 
 
-class TaskStatus(str, Enum):
+class TaskStatus(StrEnum):
     """Possible states for a task in the orchestrator."""
 
     PENDING = "pending"
