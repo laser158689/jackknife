@@ -52,9 +52,9 @@ def test_all_exceptions_inherit_from_jackknife_error() -> None:
         ScaffoldError,
     ]
     for exc_class in leaf_exceptions:
-        assert issubclass(
-            exc_class, JackknifeError
-        ), f"{exc_class.__name__} must inherit from JackknifeError"
+        assert issubclass(exc_class, JackknifeError), (
+            f"{exc_class.__name__} must inherit from JackknifeError"
+        )
 
 
 def test_llm_error_hierarchy() -> None:
