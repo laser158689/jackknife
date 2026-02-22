@@ -46,7 +46,7 @@ mcp                = { version = "^1.0", optional = true }
 
 # Storage blade
 boto3              = { version = "^1.35", optional = true }
-google-cloud-storage = { version = "^2.18", optional = true }
+google-cloud-storage = { version = "^3.9", optional = true }
 azure-storage-blob = { version = "^12.22", optional = true }
 
 # Data — SQL blade
