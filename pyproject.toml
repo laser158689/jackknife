@@ -25,7 +25,7 @@ pydantic           = "^2.9"
 pydantic-settings  = "^2.6"
 typer              = "^0.13"
 click              = ">=8.0.0,<8.2.0"  # Constrained: typer 0.13.x incompatible with click 8.2+
-structlog          = "^24.4"
+structlog          = "^25.5"
 tomli              = "^2.0"
 python-dotenv      = "^1.0"
 aiofiles           = "^24.1"
