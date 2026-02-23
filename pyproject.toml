@@ -23,7 +23,7 @@ python = "^3.12"
 # Core (always installed)
 pydantic           = "^2.9"
 pydantic-settings  = "^2.6"
-typer              = "^0.23"
+typer              = "^0.24"
 click              = ">=8.0.0,<9.0.0"
 structlog          = "^25.5"
 tomli              = "^2.0"
