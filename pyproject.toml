@@ -115,7 +115,7 @@ jackknife = "jackknife.cli:app"
 # DEV DEPENDENCIES
 # -----------------------------------------------------------------------
 [tool.poetry.group.dev.dependencies]
-pytest           = "^8.3"
+pytest           = "^9.0"
 pytest-asyncio   = "^1.3"
 pytest-cov       = "^7.0"
 ruff             = "^0.15"
