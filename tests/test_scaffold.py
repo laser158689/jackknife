@@ -104,3 +104,31 @@ class TestScaffoldEngine:
         engine = ScaffoldEngine()
         with pytest.raises(ScaffoldError, match="not found"):
             engine.render_project("unknown", tmp_path / "p", {})
+
+    def test_missing_templates_dir_raises(self, tmp_path):
+        """Covers line 35: ScaffoldError when templates_dir doesn't exist."""
+        with pytest.raises(ScaffoldError, match="Templates directory not found"):
+            ScaffoldEngine(templates_dir=tmp_path / "nonexistent")
+
+    def test_binary_file_copied_as_is(self, tmp_path):
+        """Covers lines 84-86, 94: non-.j2 files are copied as binary."""
+        templates_dir = tmp_path / "templates"
+        tpl_dir = templates_dir / "mytpl"
+        tpl_dir.mkdir(parents=True)
+        binary_file = tpl_dir / "icon.bin"
+        binary_file.write_bytes(b"\x00\x01\x02\x03")
+
+        engine = ScaffoldEngine(templates_dir=templates_dir)
+        project = tmp_path / "output"
+        created = engine.render_project("mytpl", project, {})
+
+        assert len(created) == 1
+        assert (project / "icon.bin").read_bytes() == b"\x00\x01\x02\x03"
+
+    def test_list_templates_missing_dir(self, tmp_path):
+        """Covers line 109: _list_templates returns [] when dir is gone."""
+        templates_dir = tmp_path / "templates"
+        templates_dir.mkdir()
+        engine = ScaffoldEngine(templates_dir=templates_dir)
+        templates_dir.rmdir()
+        assert engine._list_templates() == []

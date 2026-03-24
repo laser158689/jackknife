@@ -108,3 +108,59 @@ def test_len():
     assert len(graph) == 0
     graph.add_task(make_task("t"))
     assert len(graph) == 1
+
+
+def test_execution_order_raises_on_cycle():
+    """Covers lines 76-77: NetworkXUnfeasible caught in execution_order."""
+
+    from jackknife.blades.agents.models import Task
+
+    graph = TaskGraph()
+    # Build a cyclic graph manually (bypassing validate)
+    t1_id = make_task("t1").id
+    t2_id = make_task("t2").id
+    t1 = Task(id=t1_id, title="t1", description="t1", depends_on=[t2_id])
+    t2 = Task(id=t2_id, title="t2", description="t2", depends_on=[t1_id])
+    graph.add_task(t1)
+    graph.add_task(t2)
+    with pytest.raises(AgentError, match="execution order"):
+        graph.execution_order()
+
+
+def test_update_status_unknown_id_raises():
+    """Covers line 83: AgentError for unknown task ID."""
+    import uuid
+
+    graph = TaskGraph()
+    with pytest.raises(AgentError, match="Unknown task ID"):
+        graph.update_status(uuid.uuid4(), TaskStatus.COMPLETED)
+
+
+def test_failed_tasks():
+    """Covers line 92: failed_tasks() method."""
+    graph = TaskGraph()
+    t1 = make_task("success")
+    t2 = make_task("failure")
+    graph.add_task(t1)
+    graph.add_task(t2)
+    graph.update_status(t1.id, TaskStatus.COMPLETED)
+    graph.update_status(t2.id, TaskStatus.FAILED)
+    failed = graph.failed_tasks()
+    assert len(failed) == 1
+    assert failed[0].id == t2.id
+
+
+def test_all_tasks():
+    graph = TaskGraph()
+    t1 = make_task("a")
+    t2 = make_task("b")
+    graph.add_task(t1)
+    graph.add_task(t2)
+    assert len(graph.all_tasks()) == 2
+
+
+def test_get_task_returns_none_for_missing():
+    import uuid
+
+    graph = TaskGraph()
+    assert graph.get_task(uuid.uuid4()) is None
